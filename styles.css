@@ -1109,6 +1109,24 @@ body::before {
   letter-spacing: 0.06em;
   color: var(--c-ink-mute);
 }
+.foot__top {
+  margin-top: clamp(28px, 4vw, 50px);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.82rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+  text-decoration: none;
+  animation: rise-nudge 2.4s var(--ease) infinite;
+  transition: color 0.3s ease;
+}
+.foot__top:hover { color: var(--c-accent); }
+@keyframes rise-nudge {
+  0%,100% { transform: translateY(0); opacity: 0.6; }
+  50%     { transform: translateY(-6px); opacity: 1; }
+}
 
 /* =========================================================
    LIGHTBOX

@@ -297,14 +297,13 @@
   const hero = document.querySelector(".hero");
   const eyebrow = document.querySelector(".hero__eyebrow");
   if (!nav || !hero) return;
-  const mq = window.matchMedia("(max-width: 720px)");
   let threshold = 0;
   function measureThreshold() {
-    if (mq.matches && eyebrow) {
+    if (eyebrow) {
       const r = eyebrow.getBoundingClientRect();
-      threshold = r.top + window.scrollY + r.height - 40;
+      threshold = r.top + window.scrollY + r.height - 30;
     } else {
-      threshold = hero.offsetTop + hero.offsetHeight - 90;
+      threshold = hero.offsetTop + 200;
     }
   }
   function onScroll() {
@@ -314,7 +313,6 @@
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", () => { measureThreshold(); onScroll(); });
-  mq.addEventListener("change", () => { measureThreshold(); onScroll(); });
 })();
 
 // ===============================================
