@@ -412,20 +412,39 @@
   }
 
   async function onKakao() {
-    const shareData = {
-      title: "Jongheum & Jihye — 2026.08.15",
-      text: "종흠 & 지혜의 결혼식에 초대합니다. 2026.08.15 노블발렌티 삼성.",
-      url: window.location.href,
-    };
+    const pageUrl = window.location.href;
+    if (window.Kakao && window.Kakao.isInitialized && window.Kakao.isInitialized() && window.Kakao.Share) {
+      try {
+        window.Kakao.Share.sendDefault({
+          objectType: "feed",
+          content: {
+            title: "종흠과 지혜의 결혼식에 초대합니다",
+            description: "2026.08.15 (토) 오후 1시 · 노블발렌티 삼성",
+            imageUrl: "https://jihyepark.me/assets/og-image.jpg",
+            link: { mobileWebUrl: pageUrl, webUrl: pageUrl },
+          },
+          buttons: [
+            { title: "청첩장 열기", link: { mobileWebUrl: pageUrl, webUrl: pageUrl } },
+          ],
+        });
+        return;
+      } catch (e) {
+        console.warn("Kakao share failed, falling back", e);
+      }
+    }
     if (navigator.share) {
       try {
-        await navigator.share(shareData);
+        await navigator.share({
+          title: "종흠과 지혜의 결혼식에 초대합니다",
+          text: "2026.08.15 (토) 오후 1시 · 노블발렌티 삼성",
+          url: pageUrl,
+        });
         return;
       } catch (e) {
         if (e && e.name === "AbortError") return;
       }
     }
-    const ok = await writeClipboard(window.location.href);
+    const ok = await writeClipboard(pageUrl);
     flashCopy(ok, ok ? "링크 복사됨, 카카오톡에 붙여넣기" : "복사 실패");
   }
 

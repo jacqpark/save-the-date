@@ -521,18 +521,21 @@ body::before {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.55em;
+    gap: 0.35em;
   }
   .invitation__parents-row {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: 0.55em;
+    gap: 0.35em;
     white-space: nowrap;
-    font-size: clamp(0.92rem, 3.4vw, 1.05rem);
   }
   .invitation__parent-prefix,
-  .invitation__parent-name { white-space: nowrap; }
+  .invitation__parent-name {
+    white-space: nowrap;
+    font-size: clamp(0.95rem, 4vw, 1.05rem);
+  }
+  .invitation__parent-name { letter-spacing: 0.02em; }
 }
 
 /* =========================================================
