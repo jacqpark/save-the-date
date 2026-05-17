@@ -146,20 +146,20 @@
   const nextBtn = carousel.querySelector("[data-next]");
   const countEl = carousel.querySelector("[data-count]");
 
-  const total = 21;
+  const total = 22;
   const slides = [];
 
-  for (let i = 1; i <= total; i++) {
+  for (let i = 0; i < total; i++) {
     const slide = document.createElement("figure");
     slide.className = "carousel__slide";
     slide.setAttribute("role", "group");
     slide.setAttribute("aria-roledescription", "slide");
-    slide.setAttribute("aria-label", `${i} of ${total}`);
+    slide.setAttribute("aria-label", `${i + 1} of ${total}`);
 
     const img = document.createElement("img");
     img.src = `images/car-${i}.webp`;
-    img.alt = `Jongheum & Jihye — photo ${i}`;
-    img.loading = i <= 3 ? "eager" : "lazy";
+    img.alt = `Jongheum & Jihye — photo ${i + 1}`;
+    img.loading = i < 3 ? "eager" : "lazy";
     img.decoding = "async";
     img.draggable = false;
     img.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -280,11 +280,11 @@
   const btnClose = lb.querySelector("[data-lightbox-close]");
   const btnPrev = lb.querySelector("[data-lightbox-prev]");
   const btnNext = lb.querySelector("[data-lightbox-next]");
-  const total = (window.__carouselTotal || 21);
+  const total = (window.__carouselTotal || 22);
   let idx = 0;
 
   function render() {
-    img.src = `images/full/car-${idx + 1}.webp`;
+    img.src = `images/full/car-${idx}.webp`;
     img.alt = `Jongheum & Jihye — photo ${idx + 1}`;
     count.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
     if (window.__carouselGoTo) window.__carouselGoTo(idx);
