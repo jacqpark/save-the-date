@@ -90,6 +90,50 @@
 })();
 
 // ===============================================
+// Gallery cover: stacked booklet that opens and folds the carousel
+// ===============================================
+(function () {
+  const cover = document.querySelector("[data-cover]");
+  const carousel = document.querySelector("[data-carousel]");
+  if (!cover || !carousel) return;
+
+  let opened = false;
+
+  function openCarousel() {
+    if (opened) return;
+    opened = true;
+    // Instant cover hide so the carousel lands at the correct flow position
+    // immediately (no settle / re-position flash).
+    cover.style.display = "none";
+    carousel.hidden = false;
+    carousel.classList.add("is-fading-in");
+    if (window.__carouselRefresh) window.__carouselRefresh();
+    // next frame: remove fade class so opacity transitions 0 → 1
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      carousel.classList.remove("is-fading-in");
+    }));
+  }
+
+  function foldBack() {
+    if (!opened) return;
+    opened = false;
+    carousel.hidden = true;
+    carousel.classList.remove("is-fading-in");
+    cover.style.display = "";
+    // bring the cover back into view smoothly
+    cover.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  cover.addEventListener("click", openCarousel);
+  cover.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openCarousel(); }
+  });
+
+  const foldBtn = document.querySelector("[data-fold-back]");
+  if (foldBtn) foldBtn.addEventListener("click", foldBack);
+})();
+
+// ===============================================
 // Gallery carousel
 // ===============================================
 (function () {
@@ -173,6 +217,13 @@
   // expose for lightbox sync
   window.__carouselGoTo = (i) => { active = ((i % total) + total) % total; update(); };
   window.__carouselTotal = total;
+  // expose for the booklet cover, which reveals the carousel after first paint
+  window.__carouselRefresh = () => {
+    requestAnimationFrame(() => {
+      update();
+      requestAnimationFrame(update);
+    });
+  };
 
   // keyboard
   carousel.tabIndex = 0;
@@ -287,6 +338,60 @@
     else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) close();
     swiping = false;
   });
+})();
+
+// ===============================================
+// Footer share link: copy current page URL to clipboard
+// ===============================================
+(function () {
+  const btn = document.querySelector("[data-share-link]");
+  if (!btn) return;
+  const label = btn.querySelector("[data-share-label]") || btn;
+  const original = label.textContent;
+  let resetTimer = 0;
+
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    ta.style.pointerEvents = "none";
+    ta.style.left = "0";
+    ta.style.top = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  async function copyLink() {
+    const url = window.location.href;
+    let ok = false;
+    if (navigator.clipboard && window.isSecureContext) {
+      try { await navigator.clipboard.writeText(url); ok = true; }
+      catch (e) { ok = fallbackCopy(url); }
+    } else {
+      ok = fallbackCopy(url);
+    }
+    flash(ok);
+  }
+
+  function flash(ok) {
+    btn.classList.toggle("is-copied", ok);
+    label.textContent = ok ? "복사되었습니다" : "복사 실패";
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      btn.classList.remove("is-copied");
+      label.textContent = original;
+    }, 1800);
+  }
+
+  btn.addEventListener("click", copyLink);
 })();
 
 // ===============================================

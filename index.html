@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Amarante&family=Italiana&family=Praise&family=Lobster&family=Molle:ital@1&family=Cormorant:ital,wght@1,400&family=Newsreader:wght@400&family=Song+Myung&family=Noto+Serif+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <link rel="stylesheet" href="styles.css?v=20260514z" />
+  <link rel="stylesheet" href="styles.css?v=20260517e" />
 </head>
 <body>
 
@@ -99,13 +99,20 @@
       </div>
 
       <div class="invitation__body hangul">
-        <p>새로운 마음과 새 의미를 간직하며</p>
-        <p>저희 두 사람이 새 출발의</p>
-        <p>첫걸음을 내딛습니다.</p>
+        <p>온타리오 호 곁에서 만나</p>
+        <p>몽블랑을 품에 안고</p>
+        <p>살아가는 두 사람이</p>
         <p class="invitation__break">&nbsp;</p>
-        <p>좋은 꿈, 바른 뜻으로 올바르게 살 수 있도록</p>
-        <p>축복과 격려 주시면</p>
-        <p>더없는 기쁨으로 간직하겠습니다.</p>
+        <p>계절의 흐름을 지나</p>
+        <p>대륙의 시간을 건너</p>
+        <p>이제 하나가 되는 약속을 맺으려 합니다.</p>
+        <p class="invitation__break">&nbsp;</p>
+        <div class="invitation__parents">
+          <span class="invitation__parent-prefix">정덕명 · 신향선의 아들</span>
+          <strong class="invitation__parent-name">종흠</strong>
+          <span class="invitation__parent-prefix">박창렬 · 한혜영의 딸</span>
+          <strong class="invitation__parent-name">지혜</strong>
+        </div>
       </div>
     </div>
   </section>
@@ -120,7 +127,18 @@
       </div>
     </header>
 
-    <div class="carousel" data-carousel>
+    <button class="gallery__cover" data-cover type="button" aria-label="갤러리 열기">
+      <span class="gallery__cover-stack" aria-hidden="true">
+        <span class="gallery__cover-paper gallery__cover-paper--back"></span>
+        <span class="gallery__cover-paper gallery__cover-paper--mid"></span>
+        <span class="gallery__cover-frame">
+          <img class="gallery__cover-image" src="images/getting-married.PNG" alt="" />
+        </span>
+      </span>
+      <span class="gallery__cover-hint hangul">터치하여 펼치기</span>
+    </button>
+
+    <div class="carousel" data-carousel hidden>
       <button class="carousel__nav carousel__nav--prev" aria-label="Previous photo" data-prev>
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
       </button>
@@ -136,6 +154,7 @@
       </button>
 
       <div class="carousel__count" data-count aria-live="polite">01 / 21</div>
+      <button class="carousel__fold hangul" type="button" data-fold-back>표지로 접기</button>
     </div>
   </section>
 
@@ -277,11 +296,14 @@
       <div class="foot__date">2026 &middot; 08 &middot; 15</div>
       <div class="foot__line"></div>
       <p class="foot__hangul hangul">노블발렌티 삼성 &middot; 토요일 오후 1시</p>
+      <button class="foot__share hangul" type="button" data-share-link>
+        <span class="foot__share-label" data-share-label>링크 공유하기</span>
+      </button>
       <a class="foot__top" href="#top" aria-label="Back to top">Top &uarr;</a>
     </div>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
-  <script src="script.js?v=20260514z" defer></script>
+  <script src="script.js?v=20260517e" defer></script>
 </body>
 </html>
