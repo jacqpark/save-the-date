@@ -341,14 +341,32 @@
 })();
 
 // ===============================================
-// Footer share link: copy current page URL to clipboard
+// Footer share: open banner with KakaoTalk + copy link options
 // ===============================================
 (function () {
-  const btn = document.querySelector("[data-share-link]");
-  if (!btn) return;
-  const label = btn.querySelector("[data-share-label]") || btn;
-  const original = label.textContent;
+  const trigger = document.querySelector("[data-share-link]");
+  const sheet = document.querySelector("[data-share-sheet]");
+  if (!trigger || !sheet) return;
+
+  const closeBtn = sheet.querySelector("[data-share-close]");
+  const kakaoBtn = sheet.querySelector("[data-share-kakao]");
+  const copyBtn = sheet.querySelector("[data-share-copy]");
+  const copyLabel = sheet.querySelector("[data-share-copy-label]");
+  const copyOriginal = copyLabel ? copyLabel.textContent : "링크 복사하기";
   let resetTimer = 0;
+
+  function open() {
+    sheet.style.display = "flex";
+    sheet.setAttribute("aria-hidden", "false");
+    document.body.classList.add("share-lock");
+    requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add("is-open")));
+  }
+  function close() {
+    sheet.classList.remove("is-open");
+    sheet.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("share-lock");
+    setTimeout(() => { if (!sheet.classList.contains("is-open")) sheet.style.display = "none"; }, 320);
+  }
 
   function fallbackCopy(text) {
     const ta = document.createElement("textarea");
@@ -369,29 +387,56 @@
     return ok;
   }
 
-  async function copyLink() {
-    const url = window.location.href;
-    let ok = false;
+  async function writeClipboard(text) {
     if (navigator.clipboard && window.isSecureContext) {
-      try { await navigator.clipboard.writeText(url); ok = true; }
-      catch (e) { ok = fallbackCopy(url); }
-    } else {
-      ok = fallbackCopy(url);
+      try { await navigator.clipboard.writeText(text); return true; }
+      catch (e) { return fallbackCopy(text); }
     }
-    flash(ok);
+    return fallbackCopy(text);
   }
 
-  function flash(ok) {
-    btn.classList.toggle("is-copied", ok);
-    label.textContent = ok ? "복사되었습니다" : "복사 실패";
+  function flashCopy(ok, customMsg) {
+    if (!copyLabel) return;
+    copyBtn.classList.toggle("is-copied", ok);
+    copyLabel.textContent = customMsg || (ok ? "복사되었습니다" : "복사 실패");
     clearTimeout(resetTimer);
     resetTimer = setTimeout(() => {
-      btn.classList.remove("is-copied");
-      label.textContent = original;
+      copyBtn.classList.remove("is-copied");
+      copyLabel.textContent = copyOriginal;
     }, 1800);
   }
 
-  btn.addEventListener("click", copyLink);
+  async function onCopy() {
+    const ok = await writeClipboard(window.location.href);
+    flashCopy(ok);
+  }
+
+  async function onKakao() {
+    const shareData = {
+      title: "Jongheum & Jihye — 2026.08.15",
+      text: "종흠 & 지혜의 결혼식에 초대합니다. 2026.08.15 노블발렌티 삼성.",
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (e) {
+        if (e && e.name === "AbortError") return;
+      }
+    }
+    const ok = await writeClipboard(window.location.href);
+    flashCopy(ok, ok ? "링크 복사됨, 카카오톡에 붙여넣기" : "복사 실패");
+  }
+
+  trigger.addEventListener("click", open);
+  closeBtn && closeBtn.addEventListener("click", close);
+  sheet.addEventListener("click", (e) => { if (e.target === sheet) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (sheet.classList.contains("is-open") && e.key === "Escape") close();
+  });
+  kakaoBtn && kakaoBtn.addEventListener("click", onKakao);
+  copyBtn && copyBtn.addEventListener("click", onCopy);
 })();
 
 // ===============================================
