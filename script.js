@@ -459,6 +459,59 @@
 })();
 
 // ===============================================
+// Account-number copy: digits-only to clipboard
+// ===============================================
+(function () {
+  const buttons = document.querySelectorAll("[data-copy]");
+  if (!buttons.length) return;
+
+  function fallback(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    ta.style.pointerEvents = "none";
+    ta.style.left = "0";
+    ta.style.top = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  async function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try { await navigator.clipboard.writeText(text); return true; }
+      catch (e) { return fallback(text); }
+    }
+    return fallback(text);
+  }
+
+  buttons.forEach((btn) => {
+    const raw = btn.getAttribute("data-copy") || "";
+    const digits = raw.replace(/\D+/g, "");
+    const label = btn.querySelector("[data-copy-label]");
+    const original = label ? label.textContent : "";
+    let timer = 0;
+
+    btn.addEventListener("click", async () => {
+      const ok = await copy(digits);
+      btn.classList.toggle("is-copied", ok);
+      if (label) label.textContent = ok ? "복사되었습니다" : "복사 실패";
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        btn.classList.remove("is-copied");
+        if (label) label.textContent = original;
+      }, 1800);
+    });
+  });
+})();
+
+// ===============================================
 // Nav scroll-state: turn yellow once user scrolls past the hero
 // ===============================================
 (function () {

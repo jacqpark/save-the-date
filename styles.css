@@ -1155,6 +1155,7 @@ body::before {
 .accounts__grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: clamp(16px, 2.2vw, 28px);
   max-width: 980px;
   margin: 0 auto;
@@ -1219,23 +1220,70 @@ body::before {
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: clamp(16px, 2vw, 22px);
   animation: openBody .5s var(--ease);
 }
 .account-card__body p { margin: 0; }
-.account-card__bank, .account-card__holder {
+.account-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.account-entry + .account-entry {
+  padding-top: clamp(16px, 2vw, 22px);
+  border-top: 1px solid var(--c-rule-soft);
+}
+.account-entry__bank, .account-entry__holder {
   font-family: var(--f-hangul);
   font-size: 0.92rem;
   color: var(--c-ink-mute);
   letter-spacing: 0.04em;
 }
-.account-card__number {
+.account-entry__number {
   font-family: var(--f-serif);
   font-weight: 500;
   font-size: clamp(1.05rem, 1.35vw, 1.3rem);
   letter-spacing: 0.06em;
   color: var(--c-ink);
-  margin-top: 8px !important;
+  margin-top: 0 !important;
+  color: var(--c-ink) !important;
+  text-decoration: none !important;
+}
+.account-entry__copy {
+  align-self: flex-start;
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--c-ink);
+  border: 1px solid var(--c-ink);
+  padding: 7px 16px;
+  font-family: var(--f-hangul);
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  transition: background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+}
+.account-entry__copy:hover {
+  background: var(--c-ink);
+  color: var(--c-bg);
+}
+.account-entry__copy.is-copied,
+.account-entry__copy.is-copied:hover {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-bg);
+}
+.account-entry__copy:focus { outline: none; }
+.account-entry__copy:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+.account-entry__copy-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 @keyframes openBody {
   from { opacity: 0; transform: translateY(-6px); }
@@ -1347,6 +1395,17 @@ body::before {
 @keyframes rise-nudge {
   0%,100% { transform: translateY(0); opacity: 0.6; }
   50%     { transform: translateY(-6px); opacity: 1; }
+}
+.foot__copy {
+  margin: clamp(28px, 4vw, 44px) 0 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--c-ink-mute);
+  opacity: 0.7;
 }
 
 /* =========================================================
