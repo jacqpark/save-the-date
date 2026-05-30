@@ -1062,6 +1062,39 @@ body::before {
   color: var(--c-bg);
 }
 
+.location__map-lock {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 402;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--c-bg);
+  border: 1px solid var(--c-ink);
+  color: var(--c-ink);
+  cursor: pointer;
+  box-shadow: 0 10px 24px -14px hsla(0,0%,0%,0.45);
+  transition: background .35s var(--ease), color .35s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.location__map-lock:hover {
+  background: var(--c-ink);
+  color: var(--c-bg);
+}
+.location__map-lock:focus { outline: none; }
+.location__map-lock:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+}
+.location__map-lock-icon { display: none; }
+.location__map-lock.is-locked .location__map-lock-icon--closed { display: block; }
+.location__map-lock:not(.is-locked) .location__map-lock-icon--open { display: block; }
+
 /* custom Naver-style pin */
 .naver-pin {
   position: relative;

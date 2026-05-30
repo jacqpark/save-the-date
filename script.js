@@ -588,17 +588,18 @@
   function initMap(mapEl) {
     if (mapEl._leaflet_id) return;
     const venue = [37.5149836, 127.0647181];
-    const isTouch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
     const map = L.map(mapEl, {
       center: venue,
       zoom: 16,
-      zoomControl: !isTouch,
+      zoomControl: true,
       scrollWheelZoom: false,
       attributionControl: true,
-      dragging: !isTouch,
+      dragging: false,
       touchZoom: false,
-      doubleClickZoom: !isTouch,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
       tap: false,
       fadeAnimation: false,
     });
@@ -617,8 +618,30 @@
     });
     L.marker(venue, { icon }).addTo(map);
 
-    map.on("click", () => map.scrollWheelZoom.enable());
-    map.on("mouseout", () => map.scrollWheelZoom.disable());
+    const lockBtn = document.querySelector("[data-map-lock]");
+    const handlers = ["dragging", "scrollWheelZoom", "touchZoom", "doubleClickZoom", "boxZoom", "keyboard"];
+    function applyLockState(locked) {
+      handlers.forEach((h) => {
+        if (!map[h]) return;
+        if (locked) map[h].disable();
+        else map[h].enable();
+      });
+      if (map.tap) {
+        if (locked) map.tap.disable();
+        else map.tap.enable();
+      }
+      if (lockBtn) {
+        lockBtn.classList.toggle("is-locked", locked);
+        lockBtn.setAttribute("aria-pressed", String(locked));
+        lockBtn.setAttribute("aria-label", locked ? "지도 잠금 해제" : "지도 잠그기");
+      }
+    }
+    applyLockState(true);
+    if (lockBtn) {
+      lockBtn.addEventListener("click", () => {
+        applyLockState(!lockBtn.classList.contains("is-locked"));
+      });
+    }
 
     const refresh = () => map.invalidateSize({ animate: false });
     requestAnimationFrame(refresh);
