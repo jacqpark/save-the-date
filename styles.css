@@ -206,6 +206,8 @@ body::before {
   flex-direction: column;
   justify-content: space-between;
   z-index: 2;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 .hero__rule {
   position: absolute;
@@ -429,6 +431,11 @@ body::before {
   }
   .hero__sticker--taegom { transform: translateY(-0.02em) rotate(-5deg); }
   .hero__sticker--baekdang { transform: translateY(-0.02em) rotate(4deg); }
+}
+
+@media (max-width: 420px) {
+  .hero__title { font-size: clamp(2.8rem, 13.5vw, 3.6rem); }
+  .hero__sticker { height: 0.7em; }
 }
 
 /* =========================================================
