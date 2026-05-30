@@ -597,9 +597,13 @@
   function initMap(mapEl) {
     if (mapEl._leaflet_id) return;
     const venue = [37.5149836, 127.0647181];
+    const station = [37.514253, 127.060275]; // 영동대로 × 봉은사로 intersection
+    // Center between venue and station (slight venue bias) so both pins
+    // stay in frame even on narrow mobile map containers.
+    const center = [37.5146500, 127.0628000];
 
     const map = L.map(mapEl, {
-      center: venue,
+      center: center,
       zoom: 16,
       zoomControl: true,
       scrollWheelZoom: false,
@@ -619,6 +623,42 @@
       maxZoom: 19,
     }).addTo(map);
 
+    const mobile = window.innerWidth < 768;
+
+    // Station platform — a lean gold box along the real Bongeunsa-ro centreline
+    // (OSM node coords). Same thickness everywhere, but trimmed at both ends on
+    // small screens so it doesn't run the full width of the narrow map.
+    const platformFull = [
+      [37.513999, 127.058907],
+      [37.514124, 127.059601],
+      [37.514223, 127.060103],
+      [37.514282, 127.060447],
+      [37.514317, 127.060624],
+      [37.514432, 127.061251],
+    ];
+    const platformShort = [
+      [37.514153, 127.059750], // trimmed west end
+      [37.514223, 127.060103],
+      [37.514282, 127.060447],
+      [37.514362, 127.060870], // trimmed east end
+    ];
+    const platform = mobile ? platformShort : platformFull;
+    L.polyline(platform, { color: "#aa9872", weight: 9, opacity: 1, lineCap: "butt", lineJoin: "round", interactive: false }).addTo(map);
+
+    // Exit 4 stub — a hairline gold passage from the top-middle of the bar's
+    // RIGHT half (clear of the station marker): a short diagonal up, then a
+    // short flat run kept parallel to Bongeunsa-ro (slope ~0.186). Built from
+    // scaled direction vectors so the length shrinks with the viewport on
+    // small screens. The exit marker sits at the flat end.
+    const exitStart = mobile ? [37.514311, 127.060590] : [37.514325, 127.060665];
+    const lenScale = mobile ? Math.max(0.40, Math.min(0.60, window.innerWidth / 680)) : 0.60;
+    const vDiag = [0.000351, 0.000385]; // diagonal direction (up-right)
+    const vFlat = [0.000121, 0.000650]; // flat direction, parallel to the road
+    const exitElbow = [exitStart[0] + vDiag[0] * lenScale, exitStart[1] + vDiag[1] * lenScale];
+    const exitEnd = [exitElbow[0] + vFlat[0] * lenScale, exitElbow[1] + vFlat[1] * lenScale];
+    const exitStub = [exitStart, exitElbow, exitEnd];
+    L.polyline(exitStub, { color: "#aa9872", weight: 2, opacity: 1, lineCap: "round", lineJoin: "round", interactive: false }).addTo(map);
+
     const icon = L.divIcon({
       className: "naver-pin",
       html: '<span class="naver-pin__bubble">노블발렌티 삼성</span><span class="naver-pin__dot"></span>',
@@ -626,6 +666,25 @@
       iconAnchor: [0, 0],
     });
     L.marker(venue, { icon }).addTo(map);
+
+    // Bongeunsa Station (봉은사역, Line 9) — transit reference, ~500m west
+    const stationIcon = L.divIcon({
+      className: "station-pin",
+      html: '<span class="station-pin__dot">9</span><span class="station-pin__bubble">봉은사역</span>',
+      iconSize: [0, 0],
+      iconAnchor: [0, 0],
+    });
+    L.marker(station, { icon: stationIcon, keyboard: false }).addTo(map);
+
+    // Exit 4 (4번 출구) — pinned to the flat end of the gold stub above.
+    const exit4 = exitEnd;
+    const exitIcon = L.divIcon({
+      className: "exit-pin",
+      html: '<span class="exit-pin__dot">4</span>',
+      iconSize: [0, 0],
+      iconAnchor: [0, 0],
+    });
+    L.marker(exit4, { icon: exitIcon, keyboard: false, zIndexOffset: 1000 }).addTo(map);
 
     const lockBtn = document.querySelector("[data-map-lock]");
     const handlers = ["dragging", "scrollWheelZoom", "touchZoom", "doubleClickZoom", "boxZoom", "keyboard"];

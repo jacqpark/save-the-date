@@ -1166,6 +1166,82 @@ body::before {
   }
 }
 
+/* subway station marker (봉은사역) — Naver-style white pill with Line 9 badge */
+.station-pin {
+  position: relative;
+  width: 0; height: 0;
+}
+.station-pin__dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #aa9872; /* Seoul Subway Line 9 */
+  color: #fff;
+  font-family: var(--f-hangul);
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 0 0 3px var(--c-bg), 0 6px 14px -8px hsla(0,0%,0%,0.55);
+}
+.station-pin__bubble {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--c-bg);
+  border: 1px solid var(--c-ink);
+  padding: 4px 9px;
+  font-family: var(--f-hangul);
+  font-size: 0.74rem;
+  letter-spacing: 0.03em;
+  color: var(--c-ink);
+  white-space: nowrap;
+  opacity: 0.92;
+  box-shadow: 0 8px 18px -14px hsla(0,0%,0%,0.5);
+}
+.station-pin__bubble::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px; height: 10px;
+  background: var(--c-bg);
+  border-left: 1px solid var(--c-ink);
+  border-top: 1px solid var(--c-ink);
+}
+
+/* subway exit marker (4번 출구) — yellow circle, black outline, numbered */
+.exit-pin {
+  position: relative;
+  width: 0; height: 0;
+}
+.exit-pin__dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #f4c400;
+  border: 1.5px solid var(--c-ink);
+  font-family: var(--f-hangul);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--c-ink);
+  line-height: 1;
+  box-shadow: 0 1px 3px hsla(0,0%,0%,0.3);
+}
+
 @media (max-width: 820px) {
   .location__grid { grid-template-columns: 1fr; gap: 40px; }
 }
