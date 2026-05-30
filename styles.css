@@ -908,7 +908,8 @@ body::before {
 .location__lines p::before {
   content: "";
   position: absolute;
-  left: 0; top: 50%;
+  left: 0;
+  top: 0.95em;
   width: 16px; height: 1px;
   background: var(--c-accent);
   transform: translateY(-50%);

@@ -9,9 +9,17 @@
   if (!ribbon) return;
   const tp = ribbon.querySelector(".ribbon__textPath");
   if (!tp) return;
+  const svg = ribbon.querySelector(".ribbon__svg");
 
   const reps = parseInt(tp.getAttribute("data-reps") || "12", 10);
-  const SPEED = 28; // slower = less frequent wrap event
+  const VIEWBOX_WIDTH = 1300;
+  const BASE_SPEED = 28; // visual pixels/sec target at desktop scale
+  function computeSpeed() {
+    const renderWidth = (svg && svg.getBoundingClientRect().width) || window.innerWidth;
+    if (!renderWidth) return BASE_SPEED;
+    return BASE_SPEED * (VIEWBOX_WIDTH / renderWidth);
+  }
+  let SPEED = computeSpeed();
   let unit = 0;
   let offset = 0;
   let last = 0;
@@ -74,6 +82,7 @@
   window.addEventListener("resize", () => {
     if (window.innerWidth === prevWidth) return;
     prevWidth = window.innerWidth;
+    SPEED = computeSpeed();
     if (!ready) return;
     const total = tp.getComputedTextLength();
     if (total > 0) {
