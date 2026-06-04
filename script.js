@@ -429,7 +429,7 @@
           content: {
             title: "종흠과 지혜의 결혼식에 초대합니다",
             description: "2026.08.15 (토) 오후 1시 · 노블발렌티 삼성",
-            imageUrl: "https://jihyepark.me/save-the-date/assets/og-image.jpg?v=20260604",
+            imageUrl: "https://jihyepark.me/save-the-date/assets/og-image-v2.jpg",
             link: { mobileWebUrl: pageUrl, webUrl: pageUrl },
           },
           buttons: [
