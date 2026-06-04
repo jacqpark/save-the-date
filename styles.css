@@ -714,9 +714,10 @@ body::before {
 .gallery__cover-hint.hangul {
   font-family: var(--f-hangul);
   font-style: normal;
+  font-weight: 700;
   font-size: 0.86rem;
   letter-spacing: 0.32em;
-  color: var(--c-ink-mute);
+  color: var(--c-ink);
 }
 .gallery__cover.is-opening {
   opacity: 0;
@@ -1721,6 +1722,302 @@ body.lightbox-lock { overflow: hidden; }
   color: var(--c-accent);
 }
 body.share-lock { overflow: hidden; }
+
+/* =========================================================
+   OUR ADVENTURE  (scrapbook gallery)
+   ========================================================= */
+.adventure {
+  position: relative;
+  padding: var(--pad-y) 0;
+  background: linear-gradient(to bottom, transparent, var(--c-paper) 40%, var(--c-paper) 60%, transparent);
+  z-index: 2;
+}
+.adventure::before {
+  content: "";
+  position: absolute;
+  top: 0; left: var(--pad-x); right: var(--pad-x);
+  height: 1px;
+  background: var(--c-rule);
+}
+.adventure__header {
+  text-align: center;
+  margin-bottom: clamp(30px, 5vw, 60px);
+  padding: 0 var(--pad-x);
+}
+.adventure__title-head {
+  font-family: "Praise", "Italiana", cursive;
+  font-weight: 400;
+  font-size: clamp(3.4rem, 8vw, 6.6rem);
+  line-height: 1;
+  margin: 0.5rem 0 0.5rem;
+  letter-spacing: 0.005em;
+  color: var(--c-accent);
+}
+.adventure__subhead {
+  margin: 0;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  letter-spacing: 0.18em;
+  color: var(--c-ink-mute);
+}
+.adventure__ornament {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+.adventure__ornament span {
+  display: block;
+  height: 1px;
+  width: 30px;
+  background: var(--c-accent);
+}
+.adventure__ornament span:nth-child(2) {
+  width: 16px;
+  height: 16px;
+  background: var(--c-accent-d);
+  transform: rotate(45deg);
+  -webkit-mask-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='black'%3E%3Ccircle cx='12' cy='7' r='5'/%3E%3Ccircle cx='7' cy='12' r='5'/%3E%3Ccircle cx='17' cy='12' r='5'/%3E%3Ccircle cx='12' cy='17' r='5'/%3E%3C/g%3E%3C/svg%3E");
+          mask-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='black'%3E%3Ccircle cx='12' cy='7' r='5'/%3E%3Ccircle cx='7' cy='12' r='5'/%3E%3Ccircle cx='17' cy='12' r='5'/%3E%3Ccircle cx='12' cy='17' r='5'/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: contain; mask-size: contain;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+}
+
+/* --- scrapbook book cover (pre-open) --- */
+.adventure__cover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(22px, 3vw, 34px);
+  margin: clamp(20px, 4vw, 50px) auto clamp(40px, 6vw, 70px);
+  padding: clamp(28px, 4vw, 48px);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 0.55s var(--ease), opacity 0.5s var(--ease);
+}
+.adventure__cover:focus { outline: none; }
+.adventure__cover.is-opening {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+  pointer-events: none;
+}
+.adventure__stack {
+  position: relative;
+  width: clamp(230px, 30vw, 410px);
+  aspect-ratio: 2 / 3;
+  display: block;
+  transform-origin: 50% 60%;
+  transition: transform 0.55s var(--ease);
+}
+.adventure__cover:hover .adventure__stack,
+.adventure__cover:focus-visible .adventure__stack {
+  transform: translateY(-4px) rotate(-0.6deg);
+}
+.adventure__paper {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  box-shadow: 0 30px 60px -40px hsla(0,0%,0%,0.45);
+}
+.adventure__paper--back {
+  background: hsl(33, 17%, 86%);
+  transform: translate(14px, 18px) rotate(3.5deg);
+  z-index: 1;
+}
+.adventure__paper--mid {
+  background: hsl(33, 17%, 91%);
+  transform: translate(-12px, 10px) rotate(-3deg);
+  z-index: 2;
+}
+.adventure__book {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: 3px 6px 6px 3px;
+  background: hsl(20, 30%, 18%);
+  box-shadow:
+    0 6px 0 -3px hsla(0,0%,0%,0.12),
+    0 40px 80px -30px hsla(0,0%,0%,0.5);
+  display: block;
+}
+/* the cropped "Our Adventure Book" photo fills the cover */
+.adventure__book-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+.adventure__book::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, hsla(20,40%,8%,0.22), transparent 36%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* taped instant photo */
+.adventure__polaroid {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 6%;
+  width: 50%;
+  transform: translateX(-50%) rotate(-3.5deg);
+  background: hsl(40, 30%, 97%);
+  padding: 6% 6% 16%;
+  box-shadow: 0 14px 26px -12px hsla(0,0%,0%,0.6);
+}
+.adventure__polaroid-frame {
+  display: block;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #ccc;
+}
+.adventure__polaroid-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+.adventure__polaroid-cap {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 3%;
+  text-align: center;
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+  font-size: clamp(0.85rem, 2.1vw, 1.15rem);
+  color: hsl(26, 34%, 32%);
+  letter-spacing: 0.01em;
+}
+.adventure__tape {
+  position: absolute;
+  z-index: 2;
+  width: 34%;
+  height: 20px;
+  background: hsla(45, 50%, 82%, 0.55);
+  box-shadow: 0 1px 2px hsla(0,0%,0%,0.12);
+}
+.adventure__tape--tl { top: -9px; left: -6%; transform: rotate(-26deg); }
+.adventure__tape--br { bottom: 18%; right: -6%; transform: rotate(-24deg); }
+
+.adventure__cover-hint {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-hangul);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.32em;
+  color: var(--c-ink);
+  animation: nudge 2.6s var(--ease) infinite;
+}
+.adventure__cover-hint::before {
+  content: "↑";
+  display: block;
+  font-family: var(--f-display);
+  font-size: 1.35em;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--c-accent);
+}
+
+/* --- adventure carousel: reuses .carousel visuals, adds captions --- */
+.adventure__carousel { margin-top: 6px; }
+.adventure__carousel .carousel__slide {
+  aspect-ratio: auto;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.4vw, 18px);
+}
+.adventure__carousel .carousel__slide::after { content: none; }
+.adventure__carousel .carousel__frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--c-paper);
+  border-radius: 1px;
+  box-shadow: 0 30px 60px -40px hsla(0,0%,0%,0.35);
+}
+.adventure__carousel .carousel__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, hsla(0,0%,7%,0.18), transparent 40%);
+  pointer-events: none;
+}
+.adventure__carousel .carousel__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.6s var(--ease);
+  -webkit-user-select: none; user-select: none;
+  -webkit-user-drag: none; -webkit-touch-callout: none;
+  pointer-events: none;
+}
+.adventure__carousel .carousel__slide.is-active .carousel__frame img { transform: scale(1.02); }
+.carousel__loc {
+  margin: 0;
+  text-align: center;
+  font-family: var(--f-hangul);
+  font-size: clamp(0.92rem, 1.5vw, 1.12rem);
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--c-ink-soft);
+}
+.carousel__loc::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: var(--c-accent);
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+/* adventure lightbox location line */
+.lightbox__loc {
+  font-family: var(--f-hangul);
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.92);
+  text-align: center;
+  margin: 2px 0 0;
+}
+
+@media (max-width: 720px) {
+  .adventure__stack { width: 68vw; }
+  .adventure__cover { padding: 24px 18px 12px; }
+  .adventure__cover-hint { gap: 10px; font-size: 0.9rem; }
+}
 
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {

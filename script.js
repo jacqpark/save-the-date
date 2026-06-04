@@ -155,7 +155,7 @@
   const nextBtn = carousel.querySelector("[data-next]");
   const countEl = carousel.querySelector("[data-count]");
 
-  const total = 22;
+  const total = 21;
   const slides = [];
 
   for (let i = 0; i < total; i++) {
@@ -166,7 +166,7 @@
     slide.setAttribute("aria-label", `${i + 1} of ${total}`);
 
     const img = document.createElement("img");
-    img.src = `images/car-${i}.webp`;
+    img.src = `images/car-${i}.webp?v=20260605e`;
     img.alt = `Jongheum & Jihye — photo ${i + 1}`;
     img.loading = i < 3 ? "eager" : "lazy";
     img.decoding = "async";
@@ -289,11 +289,11 @@
   const btnClose = lb.querySelector("[data-lightbox-close]");
   const btnPrev = lb.querySelector("[data-lightbox-prev]");
   const btnNext = lb.querySelector("[data-lightbox-next]");
-  const total = (window.__carouselTotal || 22);
+  const total = (window.__carouselTotal || 21);
   let idx = 0;
 
   function render() {
-    img.src = `images/full/car-${idx}.webp`;
+    img.src = `images/full/car-${idx}.webp?v=20260605e`;
     img.alt = `Jongheum & Jihye — photo ${idx + 1}`;
     count.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
     if (window.__carouselGoTo) window.__carouselGoTo(idx);
@@ -733,7 +733,7 @@
 (function () {
   if (!("IntersectionObserver" in window)) return;
   const targets = document.querySelectorAll(
-    ".invitation__body, .gallery__header, .location__label, .accounts__header, .account-card"
+    ".invitation__body, .gallery__header, .adventure__header, .location__label, .accounts__header, .account-card"
   );
   targets.forEach((el) => {
     el.style.opacity = "0";
@@ -750,4 +750,275 @@
     });
   }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
   targets.forEach((el) => io.observe(el));
+})();
+
+// ===============================================
+// Our Adventure — captions (chronological order)
+// ===============================================
+window.__advCaptions = [
+  "일리노이주 시카고 · 과학산업박물관",
+  "나이아가라 폭포",
+  "오하이오주 클리블랜드",
+  "뉴욕주 펜필드 · 호박농장",
+  "워싱턴 D.C. · 국회의사당",
+  "워싱턴 D.C. · 워싱턴 기념탑",
+  "일리노이주 시카고 · 리글리 필드",
+  "일리노이주 시카고 · 시카고강",
+  "뉴욕주 버팔로 · 빌스 경기장",
+  "뉴욕주 버팔로 · 빌스 경기장",
+  "펜실베이니아주 필라델피아 · 시티즌스 뱅크 파크",
+  "뉴욕주 펜필드 · 호박농장",
+  "뉴욕주 코닝 · 유리 박물관",
+  "뉴욕주 시러큐스 · 메탈리카 콘서트",
+  "뉴욕주 로체스터 · 이스트만 극장",
+  "뉴욕주 로체스터 · 이스트만 극장",
+  "스페인 세고비아 · 수도교",
+  "스페인 마드리드 · 왕궁",
+  "스위스 리기산",
+  "스위스 리기산",
+  "프랑스 리옹 · 올랭피크 리옹",
+  "프랑스 샤모니 · 몽블랑"
+];
+
+// ===============================================
+// Adventure cover: scrapbook book that opens the carousel
+// ===============================================
+(function () {
+  const cover = document.querySelector("[data-adv-cover]");
+  const carousel = document.querySelector("[data-adv-carousel]");
+  if (!cover || !carousel) return;
+
+  let opened = false;
+
+  function openCarousel() {
+    if (opened) return;
+    opened = true;
+    cover.style.display = "none";
+    carousel.hidden = false;
+    carousel.classList.add("is-fading-in");
+    if (window.__advCarouselRefresh) window.__advCarouselRefresh();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      carousel.classList.remove("is-fading-in");
+    }));
+  }
+
+  function foldBack() {
+    if (!opened) return;
+    opened = false;
+    carousel.hidden = true;
+    carousel.classList.remove("is-fading-in");
+    cover.style.display = "";
+    cover.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  cover.addEventListener("click", openCarousel);
+  cover.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openCarousel(); }
+  });
+
+  const foldBtn = document.querySelector("[data-adv-fold-back]");
+  if (foldBtn) foldBtn.addEventListener("click", foldBack);
+})();
+
+// ===============================================
+// Adventure carousel (with location captions)
+// ===============================================
+(function () {
+  const carousel = document.querySelector("[data-adv-carousel]");
+  if (!carousel) return;
+
+  const viewport = carousel.querySelector("[data-adv-viewport]");
+  const track = carousel.querySelector("[data-adv-track]");
+  const prevBtn = carousel.querySelector("[data-adv-prev]");
+  const nextBtn = carousel.querySelector("[data-adv-next]");
+  const countEl = carousel.querySelector("[data-adv-count]");
+
+  const captions = window.__advCaptions || [];
+  const total = captions.length;
+  const slides = [];
+
+  for (let i = 0; i < total; i++) {
+    const slide = document.createElement("figure");
+    slide.className = "carousel__slide";
+    slide.setAttribute("role", "group");
+    slide.setAttribute("aria-roledescription", "slide");
+    slide.setAttribute("aria-label", `${i + 1} of ${total}`);
+
+    const frame = document.createElement("span");
+    frame.className = "carousel__frame";
+
+    const img = document.createElement("img");
+    img.src = `images/adv-${i}.webp?v=20260605c`;
+    img.alt = `${captions[i]} — 종흠 & 지혜`;
+    img.loading = i < 3 ? "eager" : "lazy";
+    img.decoding = "async";
+    img.draggable = false;
+    img.addEventListener("contextmenu", (e) => e.preventDefault());
+    img.addEventListener("dragstart", (e) => e.preventDefault());
+    frame.appendChild(img);
+
+    const cap = document.createElement("figcaption");
+    cap.className = "carousel__loc";
+    cap.textContent = captions[i];
+
+    slide.appendChild(frame);
+    slide.appendChild(cap);
+    track.appendChild(slide);
+    slides.push(slide);
+  }
+
+  let active = 0;
+
+  function update() {
+    const viewportWidth = viewport.clientWidth;
+    const slide = slides[active];
+    const offsetLeft = slide.offsetLeft;
+    const slideWidth = slide.offsetWidth;
+    const targetX = -(offsetLeft - (viewportWidth - slideWidth) / 2);
+
+    track.style.transform = `translate3d(${targetX}px, 0, 0)`;
+
+    slides.forEach((s, i) => {
+      s.classList.remove("is-active", "is-neighbor");
+      if (i === active) s.classList.add("is-active");
+      else if (i === active - 1 || i === active + 1) s.classList.add("is-neighbor");
+    });
+
+    countEl.textContent = `${String(active + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+  }
+
+  function go(delta) {
+    active = (active + delta + total) % total;
+    update();
+  }
+
+  prevBtn.addEventListener("click", () => go(-1));
+  nextBtn.addEventListener("click", () => go(1));
+
+  slides.forEach((s, i) => {
+    s.addEventListener("click", () => {
+      if (i !== active) {
+        active = i;
+        update();
+      } else if (window.__advOpenLightbox) {
+        window.__advOpenLightbox(i);
+      }
+    });
+  });
+
+  window.__advCarouselGoTo = (i) => { active = ((i % total) + total) % total; update(); };
+  window.__advCarouselTotal = total;
+  window.__advCarouselRefresh = () => {
+    requestAnimationFrame(() => {
+      update();
+      requestAnimationFrame(update);
+    });
+  };
+
+  carousel.tabIndex = 0;
+  carousel.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") { go(-1); e.preventDefault(); }
+    else if (e.key === "ArrowRight") { go(1); e.preventDefault(); }
+  });
+
+  let startX = 0, startY = 0, swiping = false;
+  viewport.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    swiping = true;
+  }, { passive: true });
+  viewport.addEventListener("touchend", (e) => {
+    if (!swiping) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    const dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      go(dx < 0 ? 1 : -1);
+    }
+    swiping = false;
+  });
+
+  let resizeRaf = 0;
+  window.addEventListener("resize", () => {
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(update);
+  });
+
+  requestAnimationFrame(update);
+  const firstImg = slides[0].querySelector("img");
+  if (firstImg && !firstImg.complete) {
+    firstImg.addEventListener("load", update, { once: true });
+  }
+})();
+
+// ===============================================
+// Adventure lightbox (with caption)
+// ===============================================
+(function () {
+  const lb = document.querySelector("[data-adv-lightbox]");
+  if (!lb) return;
+  const img = lb.querySelector("[data-adv-lightbox-img]");
+  const loc = lb.querySelector("[data-adv-lightbox-loc]");
+  const count = lb.querySelector("[data-adv-lightbox-count]");
+  const btnClose = lb.querySelector("[data-adv-lightbox-close]");
+  const btnPrev = lb.querySelector("[data-adv-lightbox-prev]");
+  const btnNext = lb.querySelector("[data-adv-lightbox-next]");
+  const captions = window.__advCaptions || [];
+  const total = (window.__advCarouselTotal || captions.length);
+  let idx = 0;
+
+  function render() {
+    img.src = `images/full/adv-${idx}.webp?v=20260605c`;
+    img.alt = `${captions[idx]} — 종흠 & 지혜`;
+    loc.textContent = captions[idx] || "";
+    count.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
+    if (window.__advCarouselGoTo) window.__advCarouselGoTo(idx);
+  }
+  function open(i) {
+    idx = ((i % total) + total) % total;
+    render();
+    document.body.classList.add("lightbox-lock");
+    lb.style.display = "flex";
+    lb.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => requestAnimationFrame(() => lb.classList.add("is-open")));
+  }
+  function close() {
+    lb.classList.remove("is-open");
+    lb.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lightbox-lock");
+    setTimeout(() => { if (!lb.classList.contains("is-open")) lb.style.display = "none"; }, 380);
+  }
+  function step(delta) { idx = ((idx + delta) % total + total) % total; render(); }
+
+  window.__advOpenLightbox = open;
+
+  img.draggable = false;
+  img.addEventListener("contextmenu", (e) => e.preventDefault());
+  img.addEventListener("dragstart", (e) => e.preventDefault());
+  lb.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  btnClose.addEventListener("click", close);
+  btnPrev.addEventListener("click", (e) => { e.stopPropagation(); step(-1); });
+  btnNext.addEventListener("click", (e) => { e.stopPropagation(); step(1); });
+  lb.addEventListener("click", (e) => { if (e.target === lb) close(); });
+  document.addEventListener("keydown", (e) => {
+    if (!lb.classList.contains("is-open")) return;
+    if (e.key === "Escape") close();
+    else if (e.key === "ArrowLeft") step(-1);
+    else if (e.key === "ArrowRight") step(1);
+  });
+
+  let sx = 0, sy = 0, swiping = false;
+  lb.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiping = true;
+  }, { passive: true });
+  lb.addEventListener("touchend", (e) => {
+    if (!swiping) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+    else if (dy > 90 && Math.abs(dy) > Math.abs(dx)) close();
+    swiping = false;
+  });
 })();
