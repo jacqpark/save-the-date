@@ -155,7 +155,10 @@
   const nextBtn = carousel.querySelector("[data-next]");
   const countEl = carousel.querySelector("[data-count]");
 
-  const total = 21;
+  // Single source of truth for which photo files appear, and in what order.
+  // Retouched extras: car--4 sits in car-4's old slot, car--13 right after car-8.
+  const photoIds = [0, 1, 2, 3, "-4", 5, 7, 8, "-13", 9, 11, 12, 14, 17, 18, 20];
+  const total = photoIds.length;
   const slides = [];
 
   for (let i = 0; i < total; i++) {
@@ -166,7 +169,7 @@
     slide.setAttribute("aria-label", `${i + 1} of ${total}`);
 
     const img = document.createElement("img");
-    img.src = `images/car-${i}.webp?v=20260605e`;
+    img.src = `images/car-${photoIds[i]}.webp?v=20260605e`;
     img.alt = `Jongheum & Jihye — photo ${i + 1}`;
     img.loading = i < 3 ? "eager" : "lazy";
     img.decoding = "async";
@@ -226,6 +229,7 @@
   // expose for lightbox sync
   window.__carouselGoTo = (i) => { active = ((i % total) + total) % total; update(); };
   window.__carouselTotal = total;
+  window.__carouselPhotoIds = photoIds;
   // expose for the booklet cover, which reveals the carousel after first paint
   window.__carouselRefresh = () => {
     requestAnimationFrame(() => {
@@ -289,11 +293,12 @@
   const btnClose = lb.querySelector("[data-lightbox-close]");
   const btnPrev = lb.querySelector("[data-lightbox-prev]");
   const btnNext = lb.querySelector("[data-lightbox-next]");
-  const total = (window.__carouselTotal || 21);
+  const photoIds = window.__carouselPhotoIds || Array.from({ length: 21 }, (_, k) => k);
+  const total = photoIds.length;
   let idx = 0;
 
   function render() {
-    img.src = `images/full/car-${idx}.webp?v=20260605e`;
+    img.src = `images/full/car-${photoIds[idx]}.webp?v=20260605e`;
     img.alt = `Jongheum & Jihye — photo ${idx + 1}`;
     count.textContent = `${String(idx + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}`;
     if (window.__carouselGoTo) window.__carouselGoTo(idx);
